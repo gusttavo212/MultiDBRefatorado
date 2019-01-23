@@ -47,9 +47,7 @@ class MongoDB extends ICrud {
     return this._schema.create(item);    
   };
 
-  read(query, skip, limit) {
-     if(!skip) skip = 0;
-     if(!limit) limit = 20;
+  read(query, skip= 0, limit= 10) {     
      return this._schema.find(query).skip(skip).limit(limit); }
 
   update(id, item) {

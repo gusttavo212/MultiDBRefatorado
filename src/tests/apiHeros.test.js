@@ -2,7 +2,7 @@ const assert = require('assert');
 const api = require('./../apiExample.1');
 let app = {};
 
-describe.only('Suite de testes da API Heroes', function () {
+describe('Suite de testes da API Heroes', function () {
     this.beforeAll(async () => {
         app = await api;
     });
@@ -10,7 +10,7 @@ describe.only('Suite de testes da API Heroes', function () {
     it('Listar /herois', async () => {
         const result = await app.inject({
             method: 'GET',
-            url: '/herois'
+            url: '/herois?skip=0&limit=3'
         });
 
         const dados = JSON.parse(result.payload);
@@ -19,28 +19,39 @@ describe.only('Suite de testes da API Heroes', function () {
         assert.ok(Array.isArray(dados));
     });
     it('Listar /herois Deve retornar somente 10 registros', async () => {
-        const TAMANHO_LIMITE = 3;
+        const TAMANHO_LIMITE = 10;
         const result = await app.inject({
             method: 'GET',
             url: `/herois?skip=0&limit=${TAMANHO_LIMITE}`
         });        
-        const dados = JSON.parse(result.payload);     
-        console.log('Dados', dados.length)   
+        const dados = JSON.parse(result.payload); 
+        
         const statusCode = result.statusCode;
         assert.deepEqual(statusCode, 200);//Status 200 requisição efetuada
         assert.ok(dados.length === TAMANHO_LIMITE);//Deve ter somente 10 dados
 
     });
     it('O Limit e o Skip tem que ser numeros INT', async () => {
-        const TAMANHO_LIMITE = 3;
+        const TAMANHO_LIMITE = 'AEEEEEEE';
         const result = await app.inject({
             method: 'GET',
             url: `/herois?skip=0&limit=${TAMANHO_LIMITE}`
-        });      
+        });    
           
+        assert.deepEqual(result.payload, 'Erro interno no servidor');     
+
+    });
+    it('Listar /herois deve filtrar um item', async () => {
+        const TAMANHO_LIMITE = 30;
+        const NAME = 'Homen Aranha-1548102086825'
+        const result = await app.inject({
+            method: 'GET',
+            url: `/herois?skip=0&limit=${TAMANHO_LIMITE}&nome=${NAME}`
+        });      
+        const dados = JSON.parse(result.payload);
         const statusCode = result.statusCode;
-        assert.deepEqual(statusCode, 500);//Status 200 requisição efetuada
-       
+        assert.deepEqual(statusCode, 200);//Status 200 requisição efetuada  
+        assert.ok(dados[0].nome === NAME);   
 
     });
     
