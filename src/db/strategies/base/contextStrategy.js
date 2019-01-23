@@ -1,5 +1,8 @@
 const ICrud = require('./../interfaces/interfaceCrud');
 //CLASSE USANDA EM TODO LUGAR que manda para os metodos da classe do banco passa do em strategy
+
+//Todo uso do crud vem pra esta classe
+//daki vai para a classe do contexto especificado seja mongo ou postgres
 class ContextStrategy extends ICrud {//Classe abstrata
     constructor(strategy){
         super();
@@ -9,8 +12,8 @@ class ContextStrategy extends ICrud {//Classe abstrata
     create(item, skip, limit) {
         return this._database.create(item);
     };
-    read(item) {
-        return this._database.read(item);
+    read(item, skip, limit) {
+        return this._database.read(item, skip, limit);
     };
     update(id, item) {
         return this._database.update(id, item);
