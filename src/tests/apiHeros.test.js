@@ -10,9 +10,10 @@ const MOCK_HEROI_INICIAL = {
     poder: 'Flechas'    
 }
 let MOCK_ID = '';
-describe('Suite de testes da API Heroes', function () {
+describe.only('Suite de testes da API Heroes', function () {
     this.beforeAll(async () => {
         app = await api;
+        
         const result = await app.inject({
             method: 'POST',
             url: '/herois',
@@ -101,7 +102,7 @@ describe('Suite de testes da API Heroes', function () {
         const expected = {
             poder :'Super Mira'
         }
-        
+        console.log('ID', _id)
         const result = await app.inject({
             method: 'PATCH',
             url: `/herois/${_id}`,

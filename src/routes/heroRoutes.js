@@ -5,7 +5,7 @@ const failAction = (request, headers, erro) => {
     throw erro;
 }
 
-class HeroRoutes  extends BaseRoute {
+class HeroRoutes extends BaseRoute {
     constructor(db) {
         super();
         this.db = db;
@@ -29,26 +29,28 @@ class HeroRoutes  extends BaseRoute {
                 }
             },
             handler: (request, headers) => {
-                try{
+                try {
                     const { //Dados que eu quero da request
-                          nome,
-                          skip,
-                          limit,                          
-                        } = request.query//Query string     
-                        const query = nome ? {
-                            nome: {$regex: `.*${nome}*.`}//Buscar só com uma parte do nome 
-                        } : {}           
-                                        
+                        nome,
+                        skip,
+                        limit,
+                    } = request.query //Query string     
+                    const query = nome ? {
+                        nome: {
+                            $regex: `.*${nome}*.`
+                        } //Buscar só com uma parte do nome 
+                    } : {}
+
                     return this.db.read(
                         nome ? query : {},
                         parseInt(skip),
                         parseInt(limit));
-                    
-                }catch(error) {
+
+                } catch (error) {
                     console.log('Deu ruim', error);
                     return 'Erro interno no servidor';
                 }
-                
+
             }
         };
     };
@@ -67,14 +69,20 @@ class HeroRoutes  extends BaseRoute {
                 }
             },
             handler: async (request) => {
-                try{
-                    const { nome, poder } = request.payload;//Pegar o nome e o poder da request
-                    const result = await this.db.create({ nome, poder});                    
+                try {
+                    const {
+                        nome,
+                        poder
+                    } = request.payload; //Pegar o nome e o poder da request
+                    const result = await this.db.create({
+                        nome,
+                        poder
+                    });
                     return {
                         message: 'Heroi cadastrado com sucesso!',
                         _id: result._id
                     };
-                }catch (error) {
+                } catch (error) {
                     console.log('Deu Ruim', error);
                     return 'Internal Error!';
                 }
@@ -88,40 +96,45 @@ class HeroRoutes  extends BaseRoute {
             method: 'PATCH',
             config: {
                 validate: {
-                    params: {
-                        id: joi.string().required()
-                    },
+                    failAction,
                     payload: {
                         nome: joi.string().required().min(3).max(100),
                         poder: joi.string().required().min(2).max(30)
                     },
-                    handler: async (request) => {
-                        try{
-                            const {
-                                id
-                            } = request.params;
+                    params: {
+                        id: joi.string().required()
+                    },
+                }
+            },
+            handler: async (request) => {
+                try {
+                    const {
+                        id
+                    } = request.params;
 
-                            const {
-                                payload
-                            } = request;
-                            const dadosString = JSON.stringify(payload);
-                            const dados = JSON.parse(dadosString);
-                           
-                            const result = await this.db.update(id, dados);
-                            console.log('Result', result)
-                            return {
-                                message: 'Heroi atualizado com sucesso!'
-                            }
-                        }catch (error) {
-                            console.log('Deu Ruim', error);
-                            return 'Internal Error!';
-                        }
+                    const {
+                        payload
+                    } = request;
+
+                    const dadosString = JSON.stringify(payload);
+                    const dados = JSON.parse(dadosString);
+
+                    const result = await this.db.update(id, dados);
+                    console.log('RESULTADO:', result)
+                    
+                    return {
+                        message: 'Heroi atualizado com sucesso!'
                     }
+                } catch (error) {
+                    console.log('Deu Ruim', error);
+                    return 'Internal Error!';
                 }
             }
         }
     }
-    
+
+
+
 };
 
 module.exports = HeroRoutes;
