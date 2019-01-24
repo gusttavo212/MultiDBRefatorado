@@ -1,6 +1,10 @@
 const BaseRoute = require('./base/baseRoute');
 const joi = require('joi');
 
+const failAction = (request, headers, erro) => {
+    throw erro;
+}
+
 class HeroRoutes  extends BaseRoute {
     constructor(db) {
         super();
@@ -16,9 +20,7 @@ class HeroRoutes  extends BaseRoute {
                     //payload
                     //headers/params => na url :id
                     //query => ?skip=10&limit=0&nome=deve
-                    failAction: (request, headers, erro) => {
-                        throw erro;
-                    },
+                    failAction,
                     query: {
                         skip: joi.number().integer().default(0),
                         limit: joi.number().integer().default(10),
@@ -50,6 +52,75 @@ class HeroRoutes  extends BaseRoute {
             }
         };
     };
+
+    create() {
+        return {
+            path: '/herois',
+            method: 'POST',
+            config: {
+                validate: {
+                    failAction,
+                    payload: {
+                        nome: joi.string().required().min(3).max(100),
+                        poder: joi.string().required().min(2).max(30)
+                    }
+                }
+            },
+            handler: async (request) => {
+                try{
+                    const { nome, poder } = request.payload;//Pegar o nome e o poder da request
+                    const result = await this.db.create({ nome, poder});                    
+                    return {
+                        message: 'Heroi cadastrado com sucesso!',
+                        _id: result._id
+                    };
+                }catch (error) {
+                    console.log('Deu Ruim', error);
+                    return 'Internal Error!';
+                }
+            }
+        };
+    };
+
+    update() {
+        return {
+            path: '/herois/{id}',
+            method: 'PATCH',
+            config: {
+                validate: {
+                    params: {
+                        id: joi.string().required()
+                    },
+                    payload: {
+                        nome: joi.string().required().min(3).max(100),
+                        poder: joi.string().required().min(2).max(30)
+                    },
+                    handler: async (request) => {
+                        try{
+                            const {
+                                id
+                            } = request.params;
+
+                            const {
+                                payload
+                            } = request;
+                            const dadosString = JSON.stringify(payload);
+                            const dados = JSON.parse(dadosString);
+                           
+                            const result = await this.db.update(id, dados);
+                            console.log('Result', result)
+                            return {
+                                message: 'Heroi atualizado com sucesso!'
+                            }
+                        }catch (error) {
+                            console.log('Deu Ruim', error);
+                            return 'Internal Error!';
+                        }
+                    }
+                }
+            }
+        }
+    }
     
 };
 
