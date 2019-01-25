@@ -66,19 +66,18 @@ describe.only('Suite de testes da API Heroes', function () {
         assert.deepEqual(result.payload, JSON.stringify(errorResult));     
 
     });
-    it('Listar GET /herois deve filtrar um item', async () => {
-        const TAMANHO_LIMITE = 30;
-        const NAME = 'Homen Aranha-1548102086825'
+    it('não deve cadastrar com payload errado', async () => {
         const result = await app.inject({
-            method: 'GET',
-            url: `/herois?skip=0&limit=${TAMANHO_LIMITE}&nome=${NAME}`
-        });      
-        const dados = JSON.parse(result.payload);
-        const statusCode = result.statusCode;
-        assert.deepEqual(statusCode, 200);//Status 200 requisição efetuada  
-        assert.ok(dados[0].nome === NAME);   
-
-    });
+            method: 'POST',
+            url: '/herois',
+            payload: {
+                NAME: 'Flash'
+            }
+        })
+        const payload = JSON.parse(result.payload)
+        assert.deepEqual(result.statusCode, 400)
+        assert.ok(payload.message.search('"nome" is required') !== -1)
+    })
 
     it('Cadastrar POST /herois', async () => {
         const result = await app.inject({
@@ -100,20 +99,18 @@ describe.only('Suite de testes da API Heroes', function () {
     it('Atualuizar PATCH /herois/id', async () => {
         const _id = MOCK_ID;
         const expected = {
-            poder :'Super Mira'
-        }
-        console.log('ID', _id)
+            nome: 'Canário Negro',
+            poder: 'Grito'
+        };
+       
         const result = await app.inject({
             method: 'PATCH',
             url: `/herois/${_id}`,
             payload: JSON.stringify(expected)
         });
 
-        const statusCode = result.statusCode;
-        const dados = JSON.parse(result.payload);
-
-        assert.ok(statusCode === 200);
-        assert.deepEqual(dados.message, 'Heroi atualizado com sucesso!')
+        assert.deepEqual(result.statusCode, 200) 
+        assert.deepEqual(JSON.parse(result.payload).nModified, 1)
     });     
     
 });

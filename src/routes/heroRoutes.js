@@ -108,23 +108,9 @@ class HeroRoutes extends BaseRoute {
             },
             handler: async (request) => {
                 try {
-                    const {
-                        id
-                    } = request.params;
-
-                    const {
-                        payload
-                    } = request;
-
-                    const dadosString = JSON.stringify(payload);
-                    const dados = JSON.parse(dadosString);
-
-                    const result = await this.db.update(id, dados);
-                    console.log('RESULTADO:', result)
-                    
-                    return {
-                        message: 'Heroi atualizado com sucesso!'
-                    }
+                    const payload = request.payload;
+                    const id = request.params.id;
+                    return this.db.update(id, payload)
                 } catch (error) {
                     console.log('Deu Ruim', error);
                     return 'Internal Error!';
