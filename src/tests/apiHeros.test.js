@@ -112,5 +112,16 @@ describe.only('Suite de testes da API Heroes', function () {
         assert.deepEqual(result.statusCode, 200) 
         assert.deepEqual(JSON.parse(result.payload).nModified, 1)
     });     
+
+    it('remover DELETE - /herois/id:', async () => {
+        const _id = MOCK_ID;
+        const result = await app.inject({
+            method: 'DELETE',
+            url: `/herois/${_id}`
+        });        
+        
+        assert.ok(result.statusCode === 200);    
+        assert.deepEqual(JSON.parse(result.payload).n, 1);
+    });
     
 });

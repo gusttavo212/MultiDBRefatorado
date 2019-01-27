@@ -1,5 +1,6 @@
 const BaseRoute = require('./base/baseRoute');
 const joi = require('joi');
+const boom = require('boom');
 
 const failAction = (request, headers, erro) => {
     throw erro;
@@ -111,6 +112,31 @@ class HeroRoutes extends BaseRoute {
                     const payload = request.payload;
                     const id = request.params.id;
                     return this.db.update(id, payload)
+                } catch (error) {
+                    console.log('Deu Ruim', error);
+                    return 'Internal Error!';
+                }
+            }
+        }
+    }
+
+    delete () {
+        return {
+            path: '/herois/{id}',
+            method: 'DELETE',
+            config: {              
+                validate: {
+                    failAction,
+                    params: {
+                        id: joi.string().required()
+                    }
+                }
+            },
+            handler: async (request) => {
+                try {
+                    const id = request.params.id;
+                    const result = await this.db.delete(id);
+                    return result                    
                 } catch (error) {
                     console.log('Deu Ruim', error);
                     return 'Internal Error!';
