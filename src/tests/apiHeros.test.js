@@ -1,5 +1,5 @@
 const assert = require('assert');
-const api = require('./../apiExample.1');
+const api = require('./../api');
 let app = {};
 const MOCK_HEROI_CADASTRAR = {
     nome: 'Chapolin Colorado',
