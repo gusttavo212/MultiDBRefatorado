@@ -35,7 +35,7 @@ class HeroRoutes extends BaseRoute {
                         nome,
                         skip,
                         limit,
-                    } = request.query //Query string     
+                    } = request.query //Query string                        
                     const query = nome ? {
                         nome: {
                             $regex: `.*${nome}*.`
@@ -49,7 +49,7 @@ class HeroRoutes extends BaseRoute {
 
                 } catch (error) {
                     console.log('Deu ruim', error);
-                    return 'Erro interno no servidor';
+                    return boom.internal();
                 }
 
             }
@@ -85,7 +85,7 @@ class HeroRoutes extends BaseRoute {
                     };
                 } catch (error) {
                     console.log('Deu Ruim', error);
-                    return 'Internal Error!';
+                    return boom.internal();
                 }
             }
         };
@@ -114,7 +114,7 @@ class HeroRoutes extends BaseRoute {
                     return this.db.update(id, payload)
                 } catch (error) {
                     console.log('Deu Ruim', error);
-                    return 'Internal Error!';
+                    return boom.internal();
                 }
             }
         }
@@ -139,7 +139,7 @@ class HeroRoutes extends BaseRoute {
                     return result                    
                 } catch (error) {
                     console.log('Deu Ruim', error);
-                    return 'Internal Error!';
+                    return boom.internal();
                 }
             }
         }

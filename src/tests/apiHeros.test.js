@@ -123,5 +123,7 @@ describe.only('Suite de testes da API Heroes', function () {
         assert.ok(result.statusCode === 200);    
         assert.deepEqual(JSON.parse(result.payload).n, 1);
     });
+
+   //Não deve remover com id incorreto
     
 });
