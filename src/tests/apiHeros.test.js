@@ -1,6 +1,11 @@
 const assert = require('assert');
 const api = require('./../api');
 let app = {};
+const TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Impvc2VwIiwiaWQiOjEsImlhdCI6MTU0ODk0OTE0OX0.uYuurCcxJRGJwuY0cW85G6UlFnXr5B85-LWMmaJ3QGc'
+const headers = {
+    Authorization: TOKEN
+}
+
 const MOCK_HEROI_CADASTRAR = {
     nome: 'Chapolin Colorado',
     poder: 'Marreta Bionica'
@@ -10,13 +15,14 @@ const MOCK_HEROI_INICIAL = {
     poder: 'Flechas'    
 }
 let MOCK_ID = '';
-describe.only('Suite de testes da API Heroes', function () {
+describe('Suite de testes da API Heroes', function () {
     this.beforeAll(async () => {
         app = await api;
         
         const result = await app.inject({
             method: 'POST',
             url: '/herois',
+            headers,
             payload: JSON.stringify(MOCK_HEROI_INICIAL)
         })
        const dados = JSON.parse(result.payload)
@@ -26,6 +32,7 @@ describe.only('Suite de testes da API Heroes', function () {
     it('Listar /herois', async () => {
         const result = await app.inject({
             method: 'GET',
+            headers,
             url: '/herois?skip=0&limit=3'
         });
 
@@ -38,6 +45,7 @@ describe.only('Suite de testes da API Heroes', function () {
         const TAMANHO_LIMITE = 10;
         const result = await app.inject({
             method: 'GET',
+            headers,
             url: `/herois?skip=0&limit=${TAMANHO_LIMITE}`
         });        
         const dados = JSON.parse(result.payload); 
@@ -51,6 +59,7 @@ describe.only('Suite de testes da API Heroes', function () {
         const TAMANHO_LIMITE = 'AEEEEEEE';
         const result = await app.inject({
             method: 'GET',
+            headers,
             url: `/herois?skip=0&limit=${TAMANHO_LIMITE}`
         });    
         const errorResult = {
@@ -70,6 +79,7 @@ describe.only('Suite de testes da API Heroes', function () {
         const result = await app.inject({
             method: 'POST',
             url: '/herois',
+            headers,
             payload: {
                 NAME: 'Flash'
             }
@@ -83,6 +93,7 @@ describe.only('Suite de testes da API Heroes', function () {
         const result = await app.inject({
             method: 'POST',
             url: `/herois`,
+            headers,
             payload: MOCK_HEROI_CADASTRAR
         });      
 
@@ -105,6 +116,7 @@ describe.only('Suite de testes da API Heroes', function () {
        
         const result = await app.inject({
             method: 'PATCH',
+            headers,
             url: `/herois/${_id}`,
             payload: JSON.stringify(expected)
         });
@@ -117,6 +129,7 @@ describe.only('Suite de testes da API Heroes', function () {
         const _id = MOCK_ID;
         const result = await app.inject({
             method: 'DELETE',
+            headers,
             url: `/herois/${_id}`
         });        
         
