@@ -5,15 +5,18 @@ const jwt = require('jsonwebtoken')
 const failAction = (request, headers, erro) => {
     throw erro;
 }
+
+const PasswordHelper = require('./../helpers/passwordHelper');
 const USER = {
     username: 'josep',
     password: '123'
 }
 
 class AuthRoutes extends BaseRoute {
-    constructor(secret) {
-        super()
-        this.secret = secret
+    constructor(secret, db) {
+        super();
+        this.secret = secret;
+        this.db = db;
     }
     login() {
         return {
@@ -36,17 +39,21 @@ class AuthRoutes extends BaseRoute {
                 const {
                     username,
                     password
-                    } = request.payload;
-
-                if(
-                    username.toLowerCase() !== USER.username ||
-                    password !== USER.password
-                )
-                    return boom.unauthorized();
-
+                } = request.payload;
+                const [usuario] = this.db.read({//[] traz a primeira posição da lista
+                    username: username.toLowerCase()
+                })
+                if(!usuario) {
+                    return boom.unauthorized('O Usuario informado não existe!')
+                }
+                const math = await PasswordHelper
+                                    .comparePassword(password, usuario.password)
+                if(!math) {
+                    return boom.unauthorized('Usuario ou senha invalidos!')
+                }
                 const token = jwt.sign({
                     username: username,
-                    id: 1
+                    id: usuario.id
                 }, this.secret)    
                 return {
                     token

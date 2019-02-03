@@ -6,7 +6,7 @@ const {
 
 const hashAsync = promisify(bcrypt.hash)
 const compareAsync = promisify(bcrypt.compare)
-const SALT = 3
+const SALT = 3 //Nivel de complexidade da criptografia
 
 class PasswordHelper {
 

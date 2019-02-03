@@ -20,6 +20,7 @@ describe.only('Auth test suite', function () {
 
         const connectionPostgres = await PostGres.connect();
         const model = await PostGres.defineModel(connectionPostgres, UsuarioSchema);
+        const result = await model.
     });
 
     it('Obter um token', async () => {

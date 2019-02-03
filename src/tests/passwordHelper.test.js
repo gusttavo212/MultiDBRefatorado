@@ -14,6 +14,7 @@ describe('UserHelper test suite', function () {
 
     it('Deve comparar uma senha com seu hash', async ()=> {
         const result = await PasswordHelper.comparePassword(SENHA, HASH);
+
         asseert.ok(result);
     })
 })
