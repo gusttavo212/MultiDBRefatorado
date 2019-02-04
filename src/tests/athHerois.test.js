@@ -4,7 +4,7 @@ const Context = require('./../db/strategies/base/contextStrategy');
 const PostGres = require('./../db/strategies/postgres/postgres');
 const UsuarioSchema = require('./../db/strategies/postgres/schemas/usuarioSchema');
 let app = {};
-const TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Impvc2VwIiwiaWQiOjEsImlhdCI6MTU0ODk0OTE0OX0.uYuurCcxJRGJwuY0cW85G6UlFnXr5B85-LWMmaJ3QGc'
+
 
 const USER = {
     username: 'josep',
@@ -12,7 +12,7 @@ const USER = {
 };
 const USER_DB = {
     ...USER,
-    password: ''
+    password: '$2a$04$458Tr9oBICUdv.iaS0j.uePzSN6oJ1xIjddpp3UQipPJoEj/KWqka'
 }
 describe('Auth test suite', function () {
     this.beforeAll(async () => {
@@ -21,7 +21,8 @@ describe('Auth test suite', function () {
         const connectionPostgres = await PostGres.connect();
         const model = await PostGres.defineModel(connectionPostgres, UsuarioSchema);
         
-        
+        const postgres = new Context(new PostGres(connectionPostgres, model))
+        await postgres.update(null, USER_DB, true)
     });
 
     it('Obter um token', async () => {
@@ -34,5 +35,21 @@ describe('Auth test suite', function () {
        
         assert.deepEqual(result.statusCode, 200);
         assert.ok(dados.token.length > 10);
+    });
+
+    it('Deve retornar não autorizado ao usar um login que não existe', async () => {
+        const result = await app.inject({
+            method: 'POST',
+            url: '/login',
+            payload: {
+                username: 'josefino',
+                password: '123'
+            }
+        });
+        const statusCode = result.statusCode        
+        const dados = JSON.parse(result.payload);
+       
+        assert.deepEqual(result.statusCode, 401);
+        assert.ok(dados.error, 'Unauthorized');
     });
 });
