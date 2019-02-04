@@ -12,15 +12,16 @@ const USER = {
 };
 const USER_DB = {
     ...USER,
-    password: ''
+    password: '$2a$04$Yf7UBgcMtRyXwvDhGXoXKeXrrqrKzshFQDYn7TzorN9ifkPC2dCgu'
 }
-describe.only('Auth test suite', function () {
+describe('Auth test suite', function () {
     this.beforeAll(async () => {
         app = await api;
 
         const connectionPostgres = await PostGres.connect();
         const model = await PostGres.defineModel(connectionPostgres, UsuarioSchema);
-        const result = await model.
+        const postgres = await new Context(new Postgres(connectionPostgres, model))
+        await postgres.update(null, USER_DB, true)
     });
 
     it('Obter um token', async () => {
