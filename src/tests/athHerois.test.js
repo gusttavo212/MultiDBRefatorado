@@ -14,12 +14,14 @@ const USER_DB = {
     ...USER,
     password: ''
 }
-describe.only('Auth test suite', function () {
+describe('Auth test suite', function () {
     this.beforeAll(async () => {
         app = await api;
 
         const connectionPostgres = await PostGres.connect();
         const model = await PostGres.defineModel(connectionPostgres, UsuarioSchema);
+        
+        
     });
 
     it('Obter um token', async () => {
