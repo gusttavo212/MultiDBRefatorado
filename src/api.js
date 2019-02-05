@@ -1,5 +1,15 @@
-//npm i vision inert hapi-swagger
+const { config } = require('dotenv');
+const { join } = require('path');
+const { ok } = require('assert')
 
+const env = process.env.NODE_ENV || "dev"
+ok(env === "prod" || env == "dev", "a env é invalida, ou dev ou prod")
+
+const configPath = join(__dirname, '../config', `.env.${env}`)
+
+config({
+    path: configPath
+})
 const hapi = require('hapi');
 const Context = require('./db/strategies/base/contextStrategy');
 const MongoDb = require('./db/strategies/mongodb/mongodb');
@@ -13,11 +23,12 @@ const UsuarioSchema = require('../src/db/strategies/postgres/schemas/usuarioSche
 const Inert = require('inert');
 const Vision = require('vision');
 const HapiSwagger = require('hapi-swagger');
-const JWT_SECRET = 'SEGREDO_MANIERO_123';
+
+const JWT_SECRET = process.env.JWT_KEY; //Chave secreta JWT
 const hapiJwt = require('hapi-auth-jwt2');
 
 const app = new hapi.Server({
-    port: 5000
+    port: process.env.PORT
 });
 
 function mapRoutes(instance, methods) {    
