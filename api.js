@@ -5,20 +5,20 @@ const { ok } = require('assert')
 const env = process.env.NODE_ENV || "dev"
 ok(env === "prod" || env == "dev", "a env é invalida, ou dev ou prod")
 
-const configPath = join(__dirname, '../config', `.env.${env}`)
+const configPath = join(__dirname, './config', `.env.${env}`)
 
 config({
     path: configPath
 })
 const hapi = require('hapi');
-const Context = require('./db/strategies/base/contextStrategy');
-const MongoDb = require('./db/strategies/mongodb/mongodb');
-const HeroiSchema = require('./db/strategies/mongodb/schemas/heroisSchema');
-const HeroRoutes = require('./routes/heroRoutes');
-const AuthRoutes = require('./routes/authRoutes');
+const Context = require('./src/db/strategies/base/contextStrategy');
+const MongoDb = require('./src/db/strategies/mongodb/mongodb');
+const HeroiSchema = require('./src/db/strategies/mongodb/schemas/heroisSchema');
+const HeroRoutes = require('./src/routes/heroRoutes');
+const AuthRoutes = require('./src/routes/authRoutes');
 
-const Postgres = require('./db/strategies/postgres/postgres');
-const UsuarioSchema = require('./db/strategies/postgres/schemas/usuarioSchema');
+const Postgres = require('./src/db/strategies/postgres/postgres');
+const UsuarioSchema = require('./src/db/strategies/postgres/schemas/usuarioSchema');
 
 const Inert = require('inert');
 const Vision = require('vision');
