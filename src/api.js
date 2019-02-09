@@ -17,8 +17,8 @@ const HeroiSchema = require('./db/strategies/mongodb/schemas/heroisSchema');
 const HeroRoutes = require('./routes/heroRoutes');
 const AuthRoutes = require('./routes/authRoutes');
 
-const Postgres = require('../src/db/strategies/postgres/postgres');
-const UsuarioSchema = require('../src/db/strategies/postgres/schemas/usuarioSchema');
+const Postgres = require('./db/strategies/postgres/postgres');
+const UsuarioSchema = require('./db/strategies/postgres/schemas/usuarioSchema');
 
 const Inert = require('inert');
 const Vision = require('vision');

@@ -170,3 +170,4 @@ class HeroRoutes extends BaseRoute {
 };
 
 module.exports = HeroRoutes;
+

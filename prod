@@ -1,0 +1,4 @@
+
+> MultiDbProjects@1.0.0 test /home/gadsden/Área de Trabalho/Projetos/JavaScript/Meus Projetos/MultiDbRefatorado
+> mocha -w src/tests/*.js
+
